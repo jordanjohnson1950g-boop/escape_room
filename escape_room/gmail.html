@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Inbox (2) - Gmail</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f1f3f4;
+}
+
+/* Top bar */
+.topbar {
+  background: white;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #5f6368;
+  margin-right: 16px;
+}
+
+.logo img {
+  height: 28px;
+}
+
+.search {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #f1f3f4;
+  font-size: 14px;
+}
+
+/* Layout */
+.container {
+  display: flex;
+  height: calc(100vh - 52px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: white;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.folder {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.folder:hover {
+  background: #f1f3f4;
+}
+
+.folder.active {
+  background: #fce8e6;
+  color: #d93025;
+  font-weight: bold;
+}
+
+.count {
+  font-size: 12px;
+  color: #555;
+}
+
+/* Inbox */
+.inbox {
+  flex: 1;
+  background: white;
+}
+
+.email {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.email.unread {
+  background: #f5f7f7;
+  font-weight: bold;
+}
+
+.from { width: 180px; }
+.subject { flex: 1; }
+.time { color: #666; font-size: 12px; }
+
+/* Empty */
+.empty {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+}
+
+/* Email view */
+.email-view {
+  padding: 20px;
+}
+
+.back {
+  color: #1a73e8;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <img src="gmail.png" alt="Gmail logo">
+    Gmail
+  </div>
+  <input class="search" placeholder="Search mail">
+</div>
+
+<div class="container">
+  <div class="sidebar">
+    <div class="folder active" onclick="showFolder('inbox', this)">
+      <span>Inbox</span><span class="count">2</span>
+    </div>
+    <div class="folder" onclick="showFolder('starred', this)">
+      <span>Starred</span><span class="count">0</span>
+    </div>
+    <div class="folder" onclick="showFolder('snoozed', this)">
+      <span>Snoozed</span><span class="count">0</span>
+    </div>
+    <div class="folder" onclick="showFolder('sent', this)">
+      <span>Sent</span><span class="count">0</span>
+    </div>
+    <div class="folder" onclick="showFolder('drafts', this)">
+      <span>Drafts</span><span class="count">1</span>
+    </div>
+  </div>
+
+  <div class="inbox" id="content"></div>
+</div>
+
+<script>
+function clearActive(el) {
+  document.querySelectorAll('.folder').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+}
+
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+
+function showFolder(folder, el) {
+  clearActive(el);
+  const c = document.getElementById('content');
+
+  if (folder === 'inbox') {
+    c.innerHTML = `
+      <div class="email unread">
+        <div class="from">IT Support</div>
+        <div class="subject">⚠ Account Recovery Successful</div>
+        <div class="time">just now</div>
+      </div>
+      <div class="email unread">
+        <div class="from">Security Team</div>
+        <div class="subject">Unusual login activity detected</div>
+        <div class="time">just now</div>
+      </div>
+      <div class="email">
+        <div class="from">Admin</div>
+        <div class="subject">Password reset request logged</div>
+        <div class="time">Yesterday</div>
+      </div>
+    `;
+  }
+
+  else if (folder === 'drafts') {
+    c.innerHTML = `
+      <div class="email unread" onclick="openDraft()">
+        <div class="from">(Draft) To Barbra</div>
+        <div class="subject">I should have told you sooner</div>
+        <div class="time">—</div>
+      </div>
+    `;
+  }
+
+  else {
+    c.innerHTML = `<div class="empty">Nothing here.</div>`;
+  }
+}
+
+function openDraft() {
+  document.getElementById('content').innerHTML = `
+    <div class="email-view">
+      <div class="back" onclick="showFolder('drafts', document.querySelector('.folder.active'))">← Back to Drafts</div>
+      <h3>Draft Message</h3>
+      <p><strong>Subject:</strong> I should have told you sooner</p>
+      <p>
+        My dearest, Barbra<br><br>
+I never planned for things to go this far. I don’t know how many times I’ve typed, erased, and rewritten this. There’s no easy way to say any of it, and maybe that’s why I’m having trouble sending you this. But, I think it’s best I tell you the truth. 
+<br><br>
+I always had my suspicions that the little guy and I looked alike. Bawb’s test was negative so I just had to check. The DNA test came back weeks ago. I didn’t really believe it at first, but I ran it again. Same result. He’s mine. 
+<br><br>
+You and I both know how much damage secrets have already done. Your divorce wasn’t the first time the truth caught up to you. I keep telling myself that if we had been honest earlier, things wouldn’t have ended like that. But it’s okay, because now we can start over, together. You, me, and Miles.
+<br><br>
+I can’t stay here. Not with everyone watching me, not with the department breathing down my neck, not knowing my own son was growing up without me. I took him because I couldn’t leave him behind. I took him because I refuse to lose him the way I lost you.
+<br><br>
+<mark>I kidnapped my son because I love you.</mark>
+<br><br>
+I’m leaving with him tomorrow night. Meet us at the airport.
+<br><br>
+Love, Chile
+        <br><br>
+      </p>
+    </div>
+  `;
+}
+
+// Load inbox by default
+showFolder('inbox', document.querySelector('.folder'));
+</script>
+
+<script>
+// Disable normal refresh (Ctrl+R) and redirect to index.html instead
+document.addEventListener("keydown", function(e) {
+  // Check for Ctrl + R
+  if (e.ctrlKey && e.key.toLowerCase() === "r") {
+    e.preventDefault(); // prevent the browser refresh
+    window.location.href = "index.html"; // redirect to login page
+  }
+
+  // Optional: also block F5
+  if (e.key === "F5") {
+    e.preventDefault();
+    window.location.href = "index.html"; 
+  }
+});
+</script>
+
+
+</body>
+</html>

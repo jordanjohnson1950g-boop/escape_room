@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background: white;
+  font-family: Arial, sans-serif;
+  padding: 40px;
+  color: #202124;
+}
+
+.captcha-box {
+  width: 360px;
+  border: 1px solid #dadce0;
+  padding: 16px;
+}
+
+/* Fake checkbox row */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.box {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #5f6368;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.box.checked {
+  background: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.checkbox-text {
+  font-size: 14px;
+}
+
+/* reCAPTCHA logo */
+.logo {
+  text-align: right;
+}
+
+.logo img {
+  width: 48px;
+}
+
+/* Status text */
+#status {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #5f6368;
+}
+
+/* Image CAPTCHA (hidden initially) */
+#imageCaptcha {
+  display: none;
+  margin-top: 20px;
+}
+
+.title {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.grid img {
+  width: 100%;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.grid img.selected {
+  border-color: #1a73e8;
+}
+
+button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#imageStatus {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #d93025;
+}
+</style>
+</head>
+<body>
+
+<div class="captcha-box">
+
+  <!-- Fake reCAPTCHA checkbox -->
+  <div class="checkbox-row">
+    <div class="checkbox" onclick="checkRobot()">
+      <div id="box" class="box"></div>
+      <div class="checkbox-text">I'm not a robot</div>
+    </div>
+
+    <!-- reCAPTCHA logo -->
+    <div class="logo">
+      <img src="recaptcha.png" alt="reCAPTCHA">
+    </div>
+  </div>
+
+  <div id="status"></div>
+
+  <!-- Image CAPTCHA -->
+  <div id="imageCaptcha">
+    <div class="title">
+      Select all images containing <strong>eighth notes</strong>
+    </div>
+
+    <div class="grid">
+      <img src="captcha_images/img1.jpg" data-id="1" onclick="toggle(this)">
+      <img src="captcha_images/img2.jpg" data-id="2" onclick="toggle(this)">
+      <img src="captcha_images/img3.jpg" data-id="3" onclick="toggle(this)">
+      <img src="captcha_images/img4.jpg" data-id="4" onclick="toggle(this)">
+      <img src="captcha_images/img5.jpg" data-id="5" onclick="toggle(this)">
+      <img src="captcha_images/img6.jpg" data-id="6" onclick="toggle(this)">
+    </div>
+
+    <button onclick="verifyImages()">Verify</button>
+    <div id="imageStatus"></div>
+  </div>
+
+</div>
+
+<script>
+let checked = false;
+
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+
+function checkRobot() {
+  if (checked) return;
+  checked = true;
+
+  const box = document.getElementById("box");
+  const status = document.getElementById("status");
+
+  box.classList.add("checked");
+  box.textContent = "✓";
+  status.textContent = "Verifying...";
+
+  setTimeout(() => {
+    status.textContent = "";
+    document.getElementById("imageCaptcha").style.display = "block";
+  }, 1200);
+}
+
+function toggle(img) {
+  img.classList.toggle("selected");
+}
+
+function verifyImages() {
+  // Get all selected image divs
+  const selectedEls = document.querySelectorAll(".selected");
+
+  // Extract their data-id (assuming each image has data-id="1" ... "9")
+  const selectedIds = Array.from(selectedEls).map(el => Number(el.dataset.id));
+
+  // Sort so order doesn’t matter
+  selectedIds.sort();
+
+  // Check if exactly images 1 and 5 are selected
+  if (selectedIds.length === 2 && selectedIds[0] === 1 && selectedIds[1] === 5) {
+    window.location.href = "form.html"; // redirect to next page
+  } else {
+    document.getElementById("imageStatus").textContent =
+      "Verification failed. Please try again.";
+  }
+}
+
+</script>
+
+</body>
+</html>

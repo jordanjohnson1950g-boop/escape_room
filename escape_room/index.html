@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-color: #000;
+  background-image: url("background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: "Segoe UI", sans-serif;
+  height: 100vh;
+  margin: 0;
+  user-select: none;
+}
+
+.login {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+}
+
+/* Profile icon */
+.profile {
+  width: 90px;
+  height: 90px;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  position: relative;
+}
+
+.profile::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.profile::after {
+  content: "";
+  width: 46px;
+  height: 28px;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Input + button row */
+.login-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  width: 180px;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* Forgot password button */
+.link-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* Error message */
+#error {
+  margin-top: 10px;
+  color: #ff6b6b;
+  font-size: 14px;
+  min-height: 18px;
+}
+
+#error span {
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="login">
+  <div class="profile"></div>
+  <h2>Chile</h2>
+
+  <form onsubmit="return check();">
+    <div class="login-row">
+      <input type="password" id="pw" placeholder="Password" autocomplete="off">
+      <button type="submit">Sign in</button>
+    </div>
+  </form>
+
+  <!-- Always-visible forgot button -->
+  <button class="link-btn" onclick="goReset()">Forgot your password?</button>
+
+  <!-- Error / reset message -->
+  <div id="error"></div>
+</div>
+
+<script>
+let attempts = 0;
+const resetLink = "captcha.html";
+
+// Disable right-click
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+
+function goReset() {
+  window.location.href = resetLink;
+}
+
+function check() {
+  const pwField = document.getElementById("pw");
+  const value = pwField.value;
+  pwField.value = ""; // clear input
+
+  
+  attempts++;
+
+  if (attempts >= 3) {
+    document.getElementById("error").innerHTML =
+      'Too many failed attempts. <span onclick="goReset()">Reset password</span>';
+  } else {
+    document.getElementById("error").textContent = "Incorrect password";
+  }
+
+  return false; // prevent form reload
+}
+</script>
+
+</body>
+</html>

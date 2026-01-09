@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Identity Verification Required</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 450px;
+}
+h2 {
+  margin-top: 0;
+}
+p.intro {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+}
+#error {
+  color: #d93025;
+  min-height: 18px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Identity Verification Required</h2>
+  <p class="intro">
+    For your security, access to this account has been temporarily restricted due to multiple unsuccessful sign-in attempts.<br><br>
+    To continue, you must verify your identity by completing the security questions below. Your responses will be used to confirm account ownership and restore access. Failure to provide accurate information may result in continued account suspension.
+  </p>
+
+  <div id="section1" class="section">
+    <label>1. What high school did you attend?</label>
+    <input type="text" id="q1" placeholder="Your answer" autocomplete="off">
+    <div id="error1"></div>
+    <button onclick="nextSection(1)">Next</button>
+  </div>
+
+  <div id="section2" class="section" style="display:none">
+    <label>2. What instrument did you play in high school?</label>
+    <input type="text" id="q2" placeholder="Your answer" autocomplete="off">
+    <div id="error2"></div>
+    <button onclick="nextSection(2)">Next</button>
+  </div>
+
+  <div id="section3" class="section" style="display:none">
+    <label>3. Who was your first girlfriend?</label>
+    <input type="text" id="q3" placeholder="Your answer" autocomplete="off">
+    <div id="error3"></div>
+    <button onclick="nextSection(3)">Submit</button>
+  </div>
+</div>
+
+<script>
+// Correct answers
+const answers = {
+  q1: "Peachtree Ridge",
+  q2: "Bass",
+  q3: "Barbra"
+};
+
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+
+// Function to move to next section and validate
+function nextSection(section) {
+  const input = document.getElementById(`q${section}`);
+  const answer = answers[`q${section}`].toLowerCase().trim();
+  const user = input.value.toLowerCase().trim();
+  const error = document.getElementById(`error${section}`);
+
+  if (user === answer) {
+    error.textContent = "";
+    document.getElementById(`section${section}`).style.display = "none";
+    if (section < 3) {
+      document.getElementById(`section${section+1}`).style.display = "block";
+    } else {
+      // All questions answered correctly → redirect to fake Gmail
+      window.location.href = "gmail.html";
+    }
+  } else {
+    error.textContent = "Incorrect answer";
+    input.value = "";
+  }
+}
+</script>
+
+</body>
+</html>
